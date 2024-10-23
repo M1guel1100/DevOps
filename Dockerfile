@@ -14,7 +14,5 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 # Copiar el JAR construido desde la etapa anterior
 COPY --from=build /app/target/*.jar app.jar
-# Exponer el puerto
-EXPOSE 9090
 # Ejecutar la aplicación
 ENTRYPOINT ["java", "-jar", "app.jar"]

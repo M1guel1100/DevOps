@@ -18,7 +18,7 @@ pipeline {
                 }
 
                 // Inicia un nuevo contenedor usando la imagen construida
-                sh 'docker run -d -p 9000:9000 --name curso-devops curso-devops'
+                sh 'docker run -d -p 9001:9001 --name curso-devops curso-devops'
             }
         }
     }
