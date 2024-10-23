@@ -1,23 +1,20 @@
-# Usa una imagen oficial de OpenJDK 19
-FROM openjdk:19-jdk-slim
-
-# Establece el directorio de trabajo
+ Etapa 1: Construir el proyecto
+FROM maven:3.8.5-openjdk-17 AS build
 WORKDIR /app
+# Copiar el archivo pom.xml y resolver las dependencias
+COPY pom.xml .
+RUN mvn dependency:go-offline
+# Copiar el resto del código fuente
+COPY src ./src
+# Construir la aplicación
+RUN mvn clean package
 
-# Instala Maven
-RUN apt-get update && \
-    apt-get install -y maven && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-# Copia todo el contenido del proyecto al contenedor
-COPY . .
-
-# Ejecuta el empaquetado del proyecto usando Maven
-RUN mvn clean package -DskipTests
-
-# Expone el puerto en el que corre tu aplicación
-EXPOSE 9000
-
-# Comando para iniciar la aplicación
-CMD ["java", "-jar", "target/cursoSpringBoot.jar"]
+# Etapa 2: Ejecutar la aplicación
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+# Copiar el JAR construido desde la etapa anterior
+COPY --from=build /app/target/*.jar app.jar
+# Exponer el puerto
+EXPOSE 9090
+# Ejecutar la aplicación
+ENTRYPOINT ["java", "-jar", "app.jar"]
