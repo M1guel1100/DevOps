@@ -15,4 +15,4 @@ WORKDIR /app
 # Copiar el JAR construido desde la etapa anterior
 COPY --from=build /app/target/*.jar app.jar
 # Ejecutar la aplicación
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar", "--server.port=9001"]
