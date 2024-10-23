@@ -1,5 +1,5 @@
 # Usa una imagen oficial de Maven con OpenJDK 11
-FROM maven:3.8.1-openjdk-11
+FROM maven:3.6.2-openjdk-11
 
 # Establece el directorio de trabajo
 WORKDIR /app
