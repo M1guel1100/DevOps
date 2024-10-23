@@ -1,4 +1,4 @@
- Etapa 1: Construir el proyecto
+ #Etapa 1: Construir el proyecto
 FROM maven:3.8.5-openjdk-17 AS build
 WORKDIR /app
 # Copiar el archivo pom.xml y resolver las dependencias
