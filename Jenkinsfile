@@ -13,7 +13,10 @@ pipeline {
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-nexus',  usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]){
                                     sh 'docker login -u $USERNAME -p $PASSWORD'
+                                    // Etiquetar la imagen
                                     sh 'docker tag curso-devops:latest m1guel1100/curso-devops-v2'
+
+                                    // Hacer push de la imagen etiquetada
                                     sh 'docker push m1guel1100/curso-devops-v2'
 
                                 }
@@ -24,7 +27,9 @@ pipeline {
                 }
 
                 // Inicia un nuevo contenedor usando la imagen construida
-                sh 'docker run -d -p 9001:9001 --name curso-devops curso-devops'
+                //sh 'docker run -d -p 9001:9001 --name curso-devops curso-devops'
+                 // Inicia un nuevo contenedor usando la imagen construida
+                 sh 'docker run -d -p 9001:9001 --name curso-devops m1guel1100/curso-devops-v2'
             }
         }
     }
