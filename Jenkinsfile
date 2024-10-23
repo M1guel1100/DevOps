@@ -13,8 +13,8 @@ pipeline {
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-nexus',  usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]){
                                     sh 'docker login -u $USERNAME -p $PASSWORD'
-                                    //sh 'docker tag curso-devops:latest m1guel1100/curso-devops-v2'
-                                    //sh 'docker push m1guel1100/curso-devops-v2'
+                                    sh 'docker tag curso-devops:latest m1guel1100/curso-devops-v2'
+                                    sh 'docker push m1guel1100/curso-devops-v2'
 
                                 }
                 // Detiene y elimina el contenedor en ejecución si existe
