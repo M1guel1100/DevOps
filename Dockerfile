@@ -1,5 +1,5 @@
-# Usa una imagen oficial de Maven 3.6.2 con OpenJDK 19
-FROM maven:3.6.2-openjdk-19 as build
+# Usa una imagen oficial de Maven con OpenJDK 19
+FROM maven:3.9.3-openjdk-19 AS build
 
 # Establece el directorio de trabajo
 WORKDIR /app
