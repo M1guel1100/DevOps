@@ -1,8 +1,14 @@
-# Usa una imagen oficial de Maven con OpenJDK 19
-FROM maven:3.9.3-openjdk-19 AS build
+# Usa una imagen oficial de OpenJDK 19
+FROM openjdk:19-jdk-slim
 
 # Establece el directorio de trabajo
 WORKDIR /app
+
+# Instala Maven
+RUN apt-get update && \
+    apt-get install -y maven && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Copia todo el contenido del proyecto al contenedor
 COPY . .
@@ -10,17 +16,8 @@ COPY . .
 # Ejecuta el empaquetado del proyecto usando Maven
 RUN mvn clean package -DskipTests
 
-# Usa una imagen ligera de OpenJDK para ejecutar el JAR
-FROM openjdk:19-jdk-slim
-
-# Establece el directorio de trabajo en la nueva imagen
-WORKDIR /app
-
-# Copia el JAR generado desde la imagen anterior
-COPY --from=build /app/target/cursoSpringBoot.jar app.jar
-
 # Expone el puerto en el que corre tu aplicación
 EXPOSE 9000
 
 # Comando para iniciar la aplicación
-CMD ["java", "-jar", "app.jar"]
+CMD ["java", "-jar", "target/cursoSpringBoot.jar"]
