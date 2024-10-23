@@ -13,8 +13,9 @@ RUN apt-get update && \
     wget https://archive.apache.org/dist/maven/maven-3/3.6.2/binaries/apache-maven-3.6.2-bin.tar.gz && \
     tar -zxvf apache-maven-3.6.2-bin.tar.gz && \
     mv apache-maven-3.6.2 /usr/share/maven && \
-    ln -s /usr/share/maven/bin/mvn /usr/bin/mvn && \
-    rm apache-maven-3.6.2-bin.tar.gz
+    rm apache-maven-3.6.2-bin.tar.gz && \
+    rm -f /usr/bin/mvn && \
+    ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
 
 # Ejecuta el empaquetado del proyecto usando Maven 3.6.2
 RUN mvn clean package
