@@ -1,24 +1,28 @@
-pipeline{
+pipeline {
     agent any
-    stages{
-        stage('core'){
-            steps{
 
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker_credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-                    sh 'docker login -u $USERNAME -p $PASSWORD'
-                    sh 'docker pull m1guel1100/curso-devops-v2'
-                    //sh 'docker run -d --name mi-contenedor -p 9001:9001 bryanglvn14/etiquetaa:v1.0'
-                    // Detener y eliminar el contenedor si ya existe
-    sh '''
-        if [ "$(docker ps -q -f name=mi-contenedor)" ]; then
-            docker stop mi-contenedor
-            docker rm mi-contenedor
-        fi
-    '''
+    stages {
+        stage('Build Docker Image') {
+            steps {
+                // Construye la imagen Docker, que también compila el proyecto
+                sh 'docker build -t curso-devops-v2 .'
+            }
+        }
 
-    // Ejecutar un nuevo contenedor
-    sh 'docker run -d --name curso-devops-V2 -p 9002:9002 m1guel1100/curso-devops-v2'
+        stage('Deploy') {
+            steps {
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-nexus',  usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]){
+                                   sh 'docker login -u $USERNAME -p $PASSWORD'
+                                   sh 'docker pull m1guel1100/curso-devops-v2'
+
+                                }
+                // Detiene y elimina el contenedor en ejecución si existe
+                script {
+                    sh 'docker stop curso-devops || true'
+                    sh 'docker rm curso-devops || true'
                 }
+
+                 sh 'docker run -d --name curso-devops-V2 -p 9002:9002 m1guel1100/curso-devops-v2'
             }
         }
     }
