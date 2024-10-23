@@ -1,5 +1,5 @@
-# Usa una imagen oficial de Maven con OpenJDK 11
-FROM maven:3.6.2-openjdk-11
+# Usa una imagen oficial de Maven 3.6.3 con OpenJDK 11
+FROM maven:3.6.3-openjdk-11 as build
 
 # Establece el directorio de trabajo
 WORKDIR /app
@@ -7,7 +7,16 @@ WORKDIR /app
 # Copia todo el contenido del proyecto al contenedor
 COPY . .
 
-# Ejecuta el empaquetado del proyecto usando Maven
+# Instalación específica de Maven 3.6.2
+RUN apt-get update && \
+    apt-get install -y wget && \
+    wget https://archive.apache.org/dist/maven/maven-3/3.6.2/binaries/apache-maven-3.6.2-bin.tar.gz && \
+    tar -zxvf apache-maven-3.6.2-bin.tar.gz && \
+    mv apache-maven-3.6.2 /usr/share/maven && \
+    ln -s /usr/share/maven/bin/mvn /usr/bin/mvn && \
+    rm apache-maven-3.6.2-bin.tar.gz
+
+# Ejecuta el empaquetado del proyecto usando Maven 3.6.2
 RUN mvn clean package
 
 # Usa una imagen ligera de OpenJDK para ejecutar el JAR
@@ -17,7 +26,7 @@ FROM openjdk:11-jre-slim
 WORKDIR /app
 
 # Copia el JAR generado desde la imagen anterior
-COPY --from=0 /app/target/cursoSpringBoot.jar app.jar
+COPY --from=build /app/target/cursoSpringBoot.jar app.jar
 
 # Expone el puerto en el que corre tu aplicación
 EXPOSE 9000
